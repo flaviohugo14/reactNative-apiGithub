@@ -21,9 +21,17 @@ O app consome a [API do Github](https://developer.github.com/v3/) para adicionar
 - [Prettier](https://github.com/prettier/prettier)
 
 ---
-![1](.github/1.png) ![2](.github/2.png)
-
-![3](.github/3.png) ![4](.github/4.png)
+<h1 align="center">
+  <img src=".github/1.png" width="200px">
+  &nbsp &nbsp &nbsp
+  <img src=".github/2.png" width="200px">
+</h1>
+<br />
+<h1 align="center">
+  <img src=".github/3.png" width="200px">
+  &nbsp &nbsp &nbsp
+  <img src=".github/4.png" width="200px">
+</h1>
 
 ---
 [Link para o desafio](https://github.com/Rocketseat/bootcamp-gostack-desafio-06)
