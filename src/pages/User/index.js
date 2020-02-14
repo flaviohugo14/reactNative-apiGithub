@@ -22,11 +22,15 @@ export default class User extends Component {
     stars: [],
     loading: true,
     page: 1,
+    refreshing: false,
   };
 
   static propTypes = {
     route: PropTypes.shape({
       params: PropTypes.shape,
+    }).isRequired,
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func,
     }).isRequired,
   };
 
@@ -52,11 +56,26 @@ export default class User extends Component {
     this.setState({ stars: [...stars, ...response.data], page: page + 1 });
   };
 
+  refreshList = async () => {
+    const { route } = this.props;
+    const { user } = route.params;
+
+    const response = await api.get(`/users/${user.login}/starred?page=1`);
+
+    this.setState({ stars: response.data });
+  };
+
+  handleNavigate = item => {
+    const { navigation } = this.props;
+
+    navigation.navigate('Star', { item });
+  };
+
   render() {
     const { stars } = this.state;
     const { route } = this.props;
     const { user } = route.params;
-    const { loading } = this.state;
+    const { loading, refreshing } = this.state;
 
     return (
       <Container>
@@ -69,12 +88,14 @@ export default class User extends Component {
           <ActivityIndicator color="#999" style={{ paddingTop: 20 }} />
         ) : (
           <Stars
+            onRefresh={this.refreshList}
+            refreshing={refreshing}
             onEndReachedThreshold={0.2}
             onEndReached={this.loadMore}
             data={stars}
             keyExtractor={star => String(star.id)}
             renderItem={({ item }) => (
-              <Starred>
+              <Starred onPress={() => this.handleNavigate(item)}>
                 <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
                 <Info>
                   <Title>{item.name}</Title>
