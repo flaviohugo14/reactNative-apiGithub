@@ -21,6 +21,7 @@ export default class User extends Component {
   state = {
     stars: [],
     loading: true,
+    page: 1,
   };
 
   static propTypes = {
@@ -32,11 +33,24 @@ export default class User extends Component {
   async componentDidMount() {
     const { route } = this.props;
     const { user } = route.params;
+    const { page } = this.state;
 
-    const response = await api.get(`/users/${user.login}/starred`);
+    const response = await api.get(`/users/${user.login}/starred?page=${page}`);
 
     this.setState({ stars: response.data, loading: false });
   }
+
+  loadMore = async () => {
+    const { route } = this.props;
+    const { user } = route.params;
+    const { page, stars } = this.state;
+
+    const response = await api.get(
+      `/users/${user.login}/starred?page=${page + 1}`
+    );
+
+    this.setState({ stars: [...stars, ...response.data], page: page + 1 });
+  };
 
   render() {
     const { stars } = this.state;
@@ -55,6 +69,8 @@ export default class User extends Component {
           <ActivityIndicator color="#999" style={{ paddingTop: 20 }} />
         ) : (
           <Stars
+            onEndReachedThreshold={0.2}
+            onEndReached={this.loadMore}
             data={stars}
             keyExtractor={star => String(star.id)}
             renderItem={({ item }) => (
